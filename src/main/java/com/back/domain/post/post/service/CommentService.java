@@ -32,4 +32,8 @@ public class CommentService {
                 new NotFoundException("Comment not found with id: " + id)
         );
     }
+
+    public List<Comment> findByPostId(String postId) {
+        return commentRepository.findByPostId(postId);
+    }
 }
