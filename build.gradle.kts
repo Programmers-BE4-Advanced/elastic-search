@@ -21,6 +21,13 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
+    /*
+        Testcontainers: 테스트용 Docker 컨테이너를 자동으로 관리
+        실제 Elasticsearch 환경에서 통합 테스트 가능
+     */testImplementation(platform("org.testcontainers:testcontainers-bom:1.19.8"))
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:testcontainers-elasticsearch")
+
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-data-elasticsearch-test")
