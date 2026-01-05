@@ -9,10 +9,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import tools.jackson.databind.ObjectMapper;
 
-@SpringBootTest
-@Testcontainers
-@AutoConfigureMockMvc
-public class PostController extends BaseTest {
+@SpringBootTest // 스프링 통합 테스트
+@Testcontainers // Testcontainers 활성화
+@AutoConfigureMockMvc // MockMvc 자동 설정
+public class PostControllerTests extends BaseTest {
     @Autowired private MockMvc mockMvc;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
