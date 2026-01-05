@@ -8,6 +8,8 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Optional;
+
 @Configuration
 @Slf4j
 @RequiredArgsConstructor
@@ -44,9 +46,11 @@ public class BaseInitData {
         }
     }
 
-    private void work3(){
+    private void work3() {
         log.debug("Post 단건 조회");
-        Post post = postService.findById("mvMMjZsBPjQRHiT9Pg9d").get();
-        log.debug("조회된 Post: {}", post);
+        for (Post post : postService.findAll()) {
+            Post postRow = postService.findById(post.getId()).get();
+            log.debug("조회된 Post: {}", postRow);
+        }
     }
 }
