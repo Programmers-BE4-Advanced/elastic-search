@@ -21,12 +21,13 @@ public class CommentController {
 
     public record CreateCommentRequest(
             @NotBlank(message = "Content must not be blank")
-            @Size(max=500, min = 1)
+            @Size(max = 500, min = 1)
             String content,
             @NotBlank(message = "Author must not be blank")
-            @Size(max=50, min = 1)
+            @Size(max = 50, min = 1)
             String author
-    ) {}
+    ) {
+    }
 
     @PostMapping
     public ResponseEntity<Comment> createComment(
@@ -57,5 +58,23 @@ public class CommentController {
         // Post 존재 여부 확인
         postService.findById(postId);
         return commentService.findById(id);
+    }
+
+    public record UpdateCommentRequest(
+            @NotBlank(message = "Content must not be blank")
+            @Size(max = 500, min = 1)
+            String content
+    ) {
+    }
+
+    @PutMapping("/{id}")
+    public Comment update(
+            @PathVariable String postId,
+            @PathVariable String id,
+            @RequestBody @Valid UpdateCommentRequest request
+    ) {
+        // Post 존재 여부 확인
+        postService.findById(postId);
+        return commentService.update(id, request.content);
     }
 }
