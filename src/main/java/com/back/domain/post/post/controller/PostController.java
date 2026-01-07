@@ -42,7 +42,7 @@ public class PostController {
         return postService.findAll();
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public Post findById(@PathVariable String id) {
         return postService.findById(id);
     }
@@ -55,7 +55,7 @@ public class PostController {
             String content
     ){}
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public Post update(
             @PathVariable String id,
             @RequestBody @Valid UpdatePostRequest request
@@ -65,5 +65,11 @@ public class PostController {
                 request.title,
                 request.content
         );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        postService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -19,7 +19,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Testcontainers // Testcontainers 활성화
 @AutoConfigureMockMvc // MockMvc 자동 설정
 public class PostControllerTests extends BaseTest {
-    @Autowired private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -27,17 +28,17 @@ public class PostControllerTests extends BaseTest {
     @DisplayName("POST /api/v1/posts - 실패 (title 누락)")
     void t1() throws Exception {
         mockMvc.perform(
-            post("/api/v1/posts")
-            .contentType("application/json")
-            .content(
-                objectMapper.writeValueAsBytes(
-                    new PostController.CreatePostRequest(
-                    null,
-                    "Test Content",
-                    "Test Author"
-                    )
-                )
-            )
+                post("/api/v1/posts")
+                        .contentType("application/json")
+                        .content(
+                                objectMapper.writeValueAsBytes(
+                                        new PostController.CreatePostRequest(
+                                                null,
+                                                "Test Content",
+                                                "Test Author"
+                                        )
+                                )
+                        )
         ).andExpect(status().isBadRequest());
     }
 
@@ -45,38 +46,38 @@ public class PostControllerTests extends BaseTest {
     @DisplayName("POST /api/v1/posts - 성공")
     void t2() throws Exception {
         mockMvc.perform(
-            post("/api/v1/posts")
-                .contentType("application/json")
-                .content(
-                    objectMapper.writeValueAsBytes(
-                        new PostController.CreatePostRequest(
-                                "Test Title",
-                                "Test Content",
-                                "Test Author"
-                        )
-                    )
-                )
-        ).andExpect(status().isCreated())
-        .andExpect(jsonPath("title").value("Test Title"))
-        .andExpect(jsonPath("id").isNotEmpty());
+                        post("/api/v1/posts")
+                                .contentType("application/json")
+                                .content(
+                                        objectMapper.writeValueAsBytes(
+                                                new PostController.CreatePostRequest(
+                                                        "Test Title",
+                                                        "Test Content",
+                                                        "Test Author"
+                                                )
+                                        )
+                                )
+                ).andExpect(status().isCreated())
+                .andExpect(jsonPath("title").value("Test Title"))
+                .andExpect(jsonPath("id").isNotEmpty());
     }
 
     @Test
     @DisplayName("GET /api/v1/posts - 성공")
     void t3() throws Exception {
         mockMvc.perform(
-            get("/api/v1/posts")
-                    .contentType("application/json")
-        ).andExpect(status().isOk())
-        .andExpect(jsonPath("$").isArray());
+                        get("/api/v1/posts")
+                                .contentType("application/json")
+                ).andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray());
     }
 
     @Test
-    @DisplayName("GET /api/v1/posts/{id} - 실패" )
+    @DisplayName("GET /api/v1/posts/{id} - 실패")
     void t4() throws Exception {
         mockMvc.perform(
-            get("/api/v1/posts/{id}", "nonexistent-id")
-                    .contentType("application/json")
+                get("/api/v1/posts/{id}", "nonexistent-id")
+                        .contentType("application/json")
         ).andExpect(status().isNotFound());
     }
 
@@ -84,30 +85,31 @@ public class PostControllerTests extends BaseTest {
     @DisplayName("GET /api/v1/posts/{id} - 성공")
     void t5() throws Exception {
         String response = mockMvc.perform(
-            post("/api/v1/posts")
-                .contentType("application/json")
-                .content(
-                    objectMapper.writeValueAsBytes(
-                        new PostController.CreatePostRequest(
-                                "Test Title for GetById",
-                                "Test Content for GetById",
-                                "Test Author for GetById"
-                        )
-                    )
-                )
-        ).andExpect(status().isCreated())
-        .andReturn().getResponse().getContentAsString();
+                        post("/api/v1/posts")
+                                .contentType("application/json")
+                                .content(
+                                        objectMapper.writeValueAsBytes(
+                                                new PostController.CreatePostRequest(
+                                                        "Test Title for GetById",
+                                                        "Test Content for GetById",
+                                                        "Test Author for GetById"
+                                                )
+                                        )
+                                )
+                ).andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
 
         Post createdPost = objectMapper.readValue(response, Post.class);
 
         mockMvc.perform(
-            get("/api/v1/posts/{id}", createdPost.getId())
-                    .contentType("application/json")
-        ).andExpect(status().isOk())
-        .andExpect(jsonPath("id").value(createdPost.getId()))
-        .andExpect(jsonPath("title").value("Test Title for GetById"))
-        .andExpect(jsonPath("content").value("Test Content for GetById"))
-        .andExpect(jsonPath("author").value("Test Author for GetById"));;
+                        get("/api/v1/posts/{id}", createdPost.getId())
+                                .contentType("application/json")
+                ).andExpect(status().isOk())
+                .andExpect(jsonPath("id").value(createdPost.getId()))
+                .andExpect(jsonPath("title").value("Test Title for GetById"))
+                .andExpect(jsonPath("content").value("Test Content for GetById"))
+                .andExpect(jsonPath("author").value("Test Author for GetById"));
+        ;
     }
 
     @Test
@@ -200,5 +202,42 @@ public class PostControllerTests extends BaseTest {
                 .andExpect(jsonPath("id").value(createdPost.getId()))
                 .andExpect(jsonPath("title").value("Updated Title"))
                 .andExpect(jsonPath("content").value("Updated Content"));
-        }
     }
+
+    @Test
+    @DisplayName("DELETE /api/v1/posts/{id} - 실패")
+    void t9() throws Exception {
+        mockMvc.perform(
+                delete("/api/v1/posts/{id}", "nonexistent-id")
+                        .contentType("application/json")
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("DELETE /api/v1/posts/{id} - 성공")
+    void t10() throws Exception {
+        // 먼저 포스트를 생성
+        String response = mockMvc.perform(
+                        post("/api/v1/posts")
+                                .contentType("application/json")
+                                .content(
+                                        objectMapper.writeValueAsBytes(
+                                                new PostController.CreatePostRequest(
+                                                        "Test Title for Delete",
+                                                        "Test Content for Delete",
+                                                        "Test Author for Delete"
+                                                )
+                                        )
+                                )
+                ).andExpect(status().isCreated())
+                .andReturn().getResponse()
+                .getContentAsString();
+        Post createdPost = objectMapper.readValue(response, Post.class);
+        // 이제 삭제 요청을 보냄
+        mockMvc.perform(
+                delete("/api/v1/posts/{id}", createdPost.getId())
+                        .contentType("application/json")
+        ).andExpect(status().isNoContent());
+
+    }
+}
