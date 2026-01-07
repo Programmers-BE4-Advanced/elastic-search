@@ -1,15 +1,13 @@
 package com.back.global.initData;
 
 import com.back.domain.post.post.document.Post;
-import com.back.domain.post.post.service.CommentService;
+import com.back.domain.post.comment.service.CommentService;
 import com.back.domain.post.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.Optional;
 
 @Configuration
 @Slf4j
