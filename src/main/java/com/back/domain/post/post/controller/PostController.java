@@ -41,4 +41,9 @@ public class PostController {
     public List<Post> findAll() {
         return postService.findAll();
     }
+
+    @GetMapping("{id}")
+    public Post findById(@PathVariable String id) {
+        return postService.findById(id);
+    }
 }

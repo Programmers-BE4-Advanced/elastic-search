@@ -1,6 +1,7 @@
 package com.back.domain.post.post.controller;
 
 import com.back.BaseTest;
+import com.back.domain.post.post.document.Post;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,12 +62,51 @@ public class PostControllerTests extends BaseTest {
     }
 
     @Test
-    @DisplayName(("GET /api/v1/posts - 성공"))
+    @DisplayName("GET /api/v1/posts - 성공")
     void t3() throws Exception {
         mockMvc.perform(
             get("/api/v1/posts")
                     .contentType("application/json")
         ).andExpect(status().isOk())
         .andExpect(jsonPath("$").isArray());
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/posts/{id} - 실패" )
+    void t4() throws Exception {
+        mockMvc.perform(
+            get("/api/v1/posts/{id}", "nonexistent-id")
+                    .contentType("application/json")
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/posts/{id} - 성공")
+    void t5() throws Exception {
+        String response = mockMvc.perform(
+            post("/api/v1/posts")
+                .contentType("application/json")
+                .content(
+                    objectMapper.writeValueAsBytes(
+                        new PostController.CreatePostRequest(
+                                "Test Title for GetById",
+                                "Test Content for GetById",
+                                "Test Author for GetById"
+                        )
+                    )
+                )
+        ).andExpect(status().isCreated())
+        .andReturn().getResponse().getContentAsString();
+
+        Post createdPost = objectMapper.readValue(response, Post.class);
+
+        mockMvc.perform(
+            get("/api/v1/posts/{id}", createdPost.getId())
+                    .contentType("application/json")
+        ).andExpect(status().isOk())
+        .andExpect(jsonPath("id").value(createdPost.getId()))
+        .andExpect(jsonPath("title").value("Test Title for GetById"))
+        .andExpect(jsonPath("content").value("Test Content for GetById"))
+        .andExpect(jsonPath("author").value("Test Author for GetById"));;
     }
 }
