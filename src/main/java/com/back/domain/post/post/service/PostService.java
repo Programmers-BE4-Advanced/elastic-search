@@ -52,6 +52,10 @@ public class PostService {
         postRepository.delete(post);
     }
 
+    public Page<Post> findAll(Pageable pageable){
+        return postRepository.findAll(pageable);
+    }
+
     public Page<Post> search(String keyword, String searchType, Pageable pageable) {
         return switch (searchType) {
             case "title" -> postRepository.findByTitleContaining(keyword, pageable);

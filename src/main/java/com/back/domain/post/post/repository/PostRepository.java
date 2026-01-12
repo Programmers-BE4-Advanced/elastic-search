@@ -14,6 +14,7 @@ public interface PostRepository extends ElasticsearchRepository<Post, String> {
         - List<Post> 반환 타입으로 재선언하면 Spring Data가 자동으로 List로 변환해줍니다.
      */
     List<Post> findAll();
+    Page<Post> findAll(Pageable pageale);
 
     Page<Post> findByTitleContaining(String title, Pageable pageable);
     Page<Post> findByContentContaining(String content, Pageable pageable);

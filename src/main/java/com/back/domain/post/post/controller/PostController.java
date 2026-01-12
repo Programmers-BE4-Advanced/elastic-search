@@ -41,8 +41,11 @@ public class PostController {
     }
 
     @GetMapping
-    public List<Post> findAll() {
-        return postService.findAll();
+    public Page<Post> findAll(
+            @RequestParam (defaultValue = "0") int page,
+          @RequestParam (defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page,size);
+        return postService.findAll(pageable);
     }
 
     @GetMapping("/{id}")
